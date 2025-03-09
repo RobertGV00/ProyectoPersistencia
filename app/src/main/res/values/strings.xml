@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">ProyectoAPIs</string>
+
+    <string name="introducir_ciudad">Introduce ciudad</string>
+
+    <string name="boton_obtener_clima">Obtener clima</string>
+
+
+    <string name="grados">ºC</string>
+    <string name="ciudad">Ciudad:</string>
+    <string name="temperatura">Temperatura actual:</string>
+    <string name="temperatura_min">Temperatura mínima</string>
+    <string name="temperatura_max">Temperatura máxima</string>
+    <string name="humedad">Humedad</string>
+    <string name="Sensacion_termica">Sensación térmica</string>
+    <string name="descripcion_clima">ahora mismo</string>
+    <string name="ciudades_guardadas">Ciudades guardadas</string>
+    <string name="titulo_clima">Clima</string>
+    <string name="eliminar_ciudad">Eliminar ciudad</string>
+    <string name="guardar_ciudad">Guardar ciudad</string>
+    <string name="no_hay_ciudades">No hay ciudades guardadas</string>
+    <string name="volver_atras">Volver</string>
+    <string name="actualizar_clima">Actualizar clima</string>
+</resources>

@@ -1,0 +1,34 @@
+entrando en el navegador y poniendo la dirección con la api key podemos ver lo que devuelve la api:
+direccion:
+https://api.openweathermap.org/data/2.5/weather?q=Madrid&appid=f9ce626e93bef28713fb264cb662814a&units=metric&lang=es
+
+
+JSON que devuelve:
+
+{
+"coord":{"lon":-3.7026,"lat":40.4165},
+
+
+"weather":[{"id":300,"main":"Drizzle",   ----> nos interesa para obtener la descripción y el icono
+"description":"llovizna ligera","icon":"09d"
+}],
+
+
+"base":"stations",
+
+
+"main":{"temp":7.85,"feels_like":5.06,"temp_min":6.88,"temp_max":8.68,"pressure":1017,"humidity":86,"sea_level":1017,"grnd_level":941
+}, -----> nos interesa para obterner la temperatura, sensación termina, temperatura mínima y temperatura máxima
+
+"visibility":10000,
+"wind":{"speed":4.63,"deg":50
+},
+"rain":{"1h":0.1},
+"clouds":{"all":75},
+"dt":1740823865,
+"sys":{"type":2,"id":2084029,"country":"ES","sunrise":1740811721,"sunset":1740852357
+},
+"timezone":3600,
+"id":3117735,
+"name":"Madrid",
+"cod":200}

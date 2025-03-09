@@ -1,0 +1,39 @@
+APUNTES PARA ENTENDER UN POCO COMO FUNCIONA
+
+
+en este paquete vamos a meter todo lo relacionado con las solicitudes que se hagan a la api OpenWeatherMAp
+para de esta forma tener todo organizado.
+
+RETROFITCLIENTE
+
+RetrofitCliente hace las solicitudes http a la api
+y convierte las respuestas que nos de la api en objetos de kotlin.
+
+es como un "mensajero", tu le dices: dime el clima de madrid
+el mensajero que sería retrofit va a openWeatherMap y trae la respuesta
+pero te la da en en JSON y nosotros para entenderla la tenemos que pasar a objetos kotlin
+y es para eso para lo que sirve retrofit, para traducir las respuestas.
+RetrofitCliente configura adonde tiene que ir y como tiene que traer la respuesta.
+
+por cierto, RetrofitCliente es un object por que es un singleton (recordamos acceso a datos, es decir, solo existe una instancia de ese objeto en toda la aplicación y no se crean nuevas copias aunque lo llamemos 30 veces).
+
+también creamos ServicioClima by lazy para que se cree cuando se usa por primera vez y así ahorra sobre todo tiempo si no se llama a la api
+
+SERVICIOCLIMA:
+
+esto sería la hoja de instrucciones para el mensajero (retrofit) y la hoja le dice:
+
+1 -> vas a usar la URL base "https://api.openweathermap.org/data/2.5/"
+
+2 -> cuando te pidan el clima tienes que usar el endpoint weather (@GET("weather")) por lo que la url quedaría así: "https://api.openweathermap.org/data/2.5/weather"
+
+3 -> tienes que llevar el nombre de la ciudad, la apikey y la unidad de medida de la temperatura en grados celsius. Esto crea la URL completa y sería de este tipo:
+
+https://api.openweathermap.org/data/2.5/weather?q=Madrid&appid=f9ce626e93bef28713fb264cb662814a&units=metric
+
+recordamos que la apikey nuestra de cuando nos hemos registrado es esta:
+f9ce626e93bef28713fb264cb662814a
+
+https://api.openweathermap.org/data/2.5/weather?q=Madrid&appid=TU_API_KEY&units=metric
+
+
