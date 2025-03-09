@@ -1,19 +1,22 @@
 package com.example.proyectopersistencia.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.proyectopersistencia.model.RespuestaClima
 import com.example.proyectopersistencia.repository.ClimaRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@HiltViewModel
+class ClimaViewModel @Inject constructor(
+    private val ciudadDao: CiudadDao,
+    private val repositorioClima: ClimaRepository
+) : ViewModel() {
 
-class ClimaViewModel(application: Application) : AndroidViewModel(application) {
-    private val repositorioClima = ClimaRepository()
-
-    // Instancia de la base de datos y el DAO
 
     private val _climaActual = MutableLiveData<RespuestaClima?>()
     val climaActual: LiveData<RespuestaClima?> = _climaActual
@@ -82,6 +85,17 @@ class ClimaViewModel(application: Application) : AndroidViewModel(application) {
     fun agregarCiudad(ciudad: CiudadEntity) {
         if (!_ciudadesGuardadas.value!!.any { it.nombre == ciudad.nombre }) {
             _ciudadesGuardadas.value = _ciudadesGuardadas.value!! + ciudad
+        }
+    }
+
+    fun actualizarCiudad(ciudad: CiudadEntity) {
+        viewModelScope.launch {
+            try {
+                ciudadDao.actualizarCiudad(ciudad.nombre, ciudad.temperatura, ciudad.icono)
+                _ciudadesGuardadas.postValue(ciudadDao.obtenerCiudades()) // Recargar la lista
+            } catch (e: Exception) {
+                _mensajeError.postValue("Error al actualizar: ${e.message}")
+            }
         }
     }
 
