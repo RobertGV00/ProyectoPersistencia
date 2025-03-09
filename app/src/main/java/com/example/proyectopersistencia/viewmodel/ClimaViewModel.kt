@@ -14,8 +14,6 @@ class ClimaViewModel(application: Application) : AndroidViewModel(application) {
     private val repositorioClima = ClimaRepository()
 
     // Instancia de la base de datos y el DAO
-    private val database = AppBBDD.getDatabase(application)
-    private val ciudadDao = database.ciudadDao()
 
     private val _climaActual = MutableLiveData<RespuestaClima?>()
     val climaActual: LiveData<RespuestaClima?> = _climaActual
@@ -106,17 +104,12 @@ class ClimaViewModel(application: Application) : AndroidViewModel(application) {
                 val apiKey = "f9ce626e93bef28713fb264cb662814a"
                 val climaActualizado = repositorioClima.obtenerClimaActual(ciudadNombre, apiKey)
 
-                val ciudadActualizada = CiudadEntity(
-                    nombre = ciudadNombre,
-                    temperatura = climaActualizado.main.temp,
-                    icono = "https://openweathermap.org/img/wn/${climaActualizado.weather[0].icon}@2x.png"
-
+                ciudadDao.actualizarCiudad(
+                    ciudadNombre,
+                    climaActualizado.main.temp,
+                    "https://openweathermap.org/img/wn/${climaActualizado.weather[0].icon}@2x.png"
                 )
-
-                ciudadDao.eliminarCiudad(ciudadNombre)
-                ciudadDao.insertarCiudad(ciudadActualizada)
                 cargarCiudades()
-
             } catch (e: Exception) {
                 println("Error al actualizar el clima de $ciudadNombre: ${e.message}")
             }

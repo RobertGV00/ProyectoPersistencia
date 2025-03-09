@@ -21,6 +21,11 @@ interface CiudadDao {
 
     @Query("SELECT COUNT(*) FROM ciudades WHERE nombre = :ciudadNombre")
     suspend fun existeCiudad(ciudadNombre: String): Int
+
+    @Query("UPDATE ciudades SET temperatura = :temp, icono = :icono WHERE nombre = :ciudadNombre")
+    suspend fun actualizarCiudad(ciudadNombre: String, temp: Double, icono: String)
+
+
 }
 
 

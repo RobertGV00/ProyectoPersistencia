@@ -22,11 +22,13 @@ import androidx.navigation.NavController
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
+import com.example.proyectoapis.R
 import com.example.proyectopersistencia.viewmodel.CiudadEntity
 import com.example.proyectopersistencia.viewmodel.ClimaViewModel
 
@@ -137,6 +139,27 @@ fun CiudadItem(ciudad: CiudadEntity, navController: NavController, viewModel: Cl
 
             IconButton(onClick = { viewModel.eliminarCiudad(ciudad.nombre) }) {
                 Icon(Icons.Default.Delete, contentDescription = "Eliminar ciudad")
+            }
+        }
+    }
+
+    @Composable
+    fun FormularioEditarCiudad(
+        ciudad: CiudadEntity,
+        onActualizar: (CiudadEntity) -> Unit
+    ) {
+        var nombre by remember { mutableStateOf(ciudad.nombre) }
+        var temperatura by remember { mutableStateOf(ciudad.temperatura.toString()) }
+
+        Column {
+            TextField(value = nombre, onValueChange = { nombre = it }, label = { Text(
+                stringResource(R.string.ciudad)) })
+            TextField(value = temperatura, onValueChange = { temperatura = it }, label = { Text(
+                stringResource(R.string.temperatura)) })
+            Button(onClick = {
+                onActualizar(CiudadEntity(ciudad.id, nombre, temperatura.toDouble(), ciudad.icono))
+            }) {
+                Text(stringResource(R.string.guardar_cambios))
             }
         }
     }
