@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -164,6 +165,20 @@ fun CiudadItem(ciudad: CiudadEntity, navController: NavController, viewModel: Cl
         }
     }
 
+    @Composable
+    fun CiudadItem(ciudad: CiudadEntity, navController: NavController, viewModel: ClimaViewModel) {
+        Card(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
+            Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+                Text(text = ciudad.nombre, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
+                IconButton(onClick = { navController.navigate("editarCiudad/${ciudad.nombre}") }) {
+                    Icon(Icons.Default.Edit, contentDescription = "Editar ciudad")
+                }
+            }
+        }
+    }
+
 }
+
+
 
 
