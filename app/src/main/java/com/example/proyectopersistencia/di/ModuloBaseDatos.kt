@@ -1,6 +1,7 @@
 package com.example.proyectopersistencia.di
 
 import android.content.Context
+import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
@@ -41,10 +42,6 @@ class ModuloBaseDatos {
             .build()
     }
 
-    @Provides
-    fun provideCiudadDao(db: AppBBDD): CiudadDao {
-        return db.ciudadDao()
-    }
 
     private suspend fun preCargarCiudades(dao: CiudadDao) {
         val ciudadesPorDefecto = listOf(
@@ -56,4 +53,6 @@ class ModuloBaseDatos {
         )
         dao.insertarCiudades(ciudadesPorDefecto)
     }
+
+
 }

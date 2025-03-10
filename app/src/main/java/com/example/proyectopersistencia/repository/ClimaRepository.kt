@@ -2,8 +2,9 @@ package com.example.proyectopersistencia.repository
 
 import com.example.proyectopersistencia.api.RetrofitCliente
 import com.example.proyectopersistencia.model.RespuestaClima
+import javax.inject.Inject
 
-class ClimaRepository {
+class ClimaRepository @Inject constructor() {
 
     //funcion para obtener el clima actual de una ciudad:
 

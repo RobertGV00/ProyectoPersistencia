@@ -14,7 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.proyectoapis.R
@@ -22,7 +22,7 @@ import com.example.proyectopersistencia.viewmodel.ClimaViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PantallaClima(navController: NavController, ciudad: String = "Madrid", viewModel: ClimaViewModel = viewModel()) {
+fun PantallaClima(navController: NavController, ciudad: String, viewModel: ClimaViewModel = hiltViewModel()) {
 
     var ciudad by remember { mutableStateOf(TextFieldValue(ciudad)) }
 

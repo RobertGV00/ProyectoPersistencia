@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("kotlin-kapt") // Habilita KAPT para Room
+    id("dagger.hilt.android.plugin")
 }
 
 android {
