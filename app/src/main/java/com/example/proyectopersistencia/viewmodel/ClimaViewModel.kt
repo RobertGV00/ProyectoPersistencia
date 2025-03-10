@@ -23,8 +23,7 @@ class ClimaViewModel @Inject constructor(
     private val _climaActual = MutableLiveData<RespuestaClima?>()
     val climaActual: LiveData<RespuestaClima?> = _climaActual
 
-    private val _ciudadesGuardadas = MutableLiveData<List<CiudadEntity>>(emptyList())
-    val ciudadesGuardadas: LiveData<List<CiudadEntity>> = _ciudadesGuardadas
+    val ciudadesGuardadas: LiveData<List<CiudadEntity>> = ciudadDao.obtenerCiudades()
 
     private val _cargando = MutableLiveData<Boolean>()
     val cargando: LiveData<Boolean> = _cargando
@@ -69,8 +68,6 @@ class ClimaViewModel @Inject constructor(
             )
             ciudadDao.insertarCiudad(nuevaCiudad)
 
-            cargarCiudades()
-
             _mensajeConfirmacion.postValue(" Ciudad ${ciudad.name} añadida correctamente.")
         }
     }
@@ -79,8 +76,6 @@ class ClimaViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 ciudadDao.actualizarCiudad(ciudad.nombre, ciudad.temperatura, ciudad.icono)
-
-                cargarCiudades()
 
                 _mensajeConfirmacion.postValue(" Ciudad ${ciudad.nombre} actualizada correctamente.")
             } catch (e: Exception) {
@@ -93,7 +88,6 @@ class ClimaViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             ciudadDao.eliminarCiudad(ciudadNombre)
 
-            cargarCiudades()
 
             _mensajeConfirmacion.postValue(" Ciudad $ciudadNombre eliminada correctamente.")
         }
@@ -110,7 +104,6 @@ class ClimaViewModel @Inject constructor(
                     climaActualizado.main.temp,
                     "https://openweathermap.org/img/wn/${climaActualizado.weather[0].icon}@2x.png"
                 )
-                cargarCiudades()
                 _mensajeConfirmacion.postValue(" Clima de $ciudadNombre actualizado correctamente.")
             } catch (e: Exception) {
                 _mensajeError.postValue("Error al actualizar el clima de $ciudadNombre: ${e.message}")
@@ -124,14 +117,6 @@ class ClimaViewModel @Inject constructor(
         _mensajeConfirmacion.postValue(null)
     }
 
-    fun cargarCiudades() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val ciudades = ciudadDao.obtenerCiudades()
-            _ciudadesGuardadas.postValue(ciudades)
-        }
-    }
 
-    init {
-        cargarCiudades()
-    }
+
 }

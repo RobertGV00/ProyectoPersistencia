@@ -29,6 +29,7 @@ fun PantallaClima(navController: NavController, ciudad: String, viewModel: Clima
     val clima = viewModel.climaActual.observeAsState().value
     val cargando = viewModel.cargando.observeAsState(false).value
     val mensajeError = viewModel.mensajeError.observeAsState().value
+    val mensajeConfirmacion = viewModel.mensajeConfirmacion.observeAsState().value
 
     Scaffold(
         topBar = {
@@ -146,6 +147,30 @@ fun PantallaClima(navController: NavController, ciudad: String, viewModel: Clima
             mensajeError?.let {
                 Text(text = it, color = Color.Red, fontSize = 14.sp)
             }
+
+            mensajeConfirmacion?.let {
+                Text(
+                    text = it,
+                    color = Color.Green,
+                    fontSize = 16.sp,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            }
+            LaunchedEffect(mensajeConfirmacion) {
+                if (mensajeConfirmacion != null) {
+                    kotlinx.coroutines.delay(2000)
+                    viewModel.limpiarMensajes()
+                }
+            }
+
+            LaunchedEffect(mensajeError) {
+                if (mensajeError != null) {
+                    kotlinx.coroutines.delay(2000)
+                    viewModel.limpiarMensajes()
+                }
+            }
+
+
         }
     }
 }
