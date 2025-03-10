@@ -1,5 +1,6 @@
 package com.example.proyectopersistencia.viewmodel
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -14,7 +15,7 @@ interface CiudadDao {
     suspend fun insertarCiudades(ciudades: List<CiudadEntity>)
 
     @Query("SELECT * FROM ciudades")
-    suspend fun obtenerCiudades(): List<CiudadEntity>
+     fun obtenerCiudades(): LiveData<List<CiudadEntity>>
 
     @Query("DELETE FROM ciudades WHERE nombre = :ciudadNombre")
     suspend fun eliminarCiudad(ciudadNombre: String)
