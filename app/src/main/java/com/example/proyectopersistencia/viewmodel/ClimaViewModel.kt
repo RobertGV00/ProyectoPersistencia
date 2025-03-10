@@ -1,6 +1,7 @@
 package com.example.proyectopersistencia.viewmodel
 
 
+import android.annotation.SuppressLint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.proyectopersistencia.model.RespuestaClima
 import com.example.proyectopersistencia.repository.ClimaRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,7 +23,7 @@ class ClimaViewModel @Inject constructor(
     private val _climaActual = MutableLiveData<RespuestaClima?>()
     val climaActual: LiveData<RespuestaClima?> = _climaActual
 
-    private val _ciudadesGuardadas = MutableLiveData<List<CiudadEntity>>()
+    private val _ciudadesGuardadas = MutableLiveData<List<CiudadEntity>>(emptyList())
     val ciudadesGuardadas: LiveData<List<CiudadEntity>> = _ciudadesGuardadas
 
     private val _cargando = MutableLiveData<Boolean>()
@@ -30,31 +32,32 @@ class ClimaViewModel @Inject constructor(
     private val _mensajeError = MutableLiveData<String>()
     val mensajeError: LiveData<String> = _mensajeError
 
+    private val _mensajeConfirmacion = MutableLiveData<String?>()
+    val mensajeConfirmacion: LiveData<String?> = _mensajeConfirmacion
+
 
     fun obtenerClima(ciudad: String) {
-        _cargando.value = true
-        viewModelScope.launch {
+        _cargando.postValue(true)
+
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val apiKey = "f9ce626e93bef28713fb264cb662814a"
-                val urlCompleta = "https://api.openweathermap.org/data/2.5/weather?q=$ciudad&appid=$apiKey&units=metric"
-                println("URL Completa: $urlCompleta")
-
                 val clima = repositorioClima.obtenerClimaActual(ciudad, apiKey)
-                _climaActual.value = clima
-                _cargando.value = false
-                println("clima obtenido: $clima")
+
+                _climaActual.postValue(clima)
+                _cargando.postValue(false)
             } catch (e: Exception) {
-                _mensajeError.value = "Error: ${e.message}"
-                _cargando.value = false
+                _mensajeError.postValue(" Error: ${e.message}")
+                _cargando.postValue(false)
             }
         }
     }
 
     fun guardarCiudad(ciudad: RespuestaClima) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val ciudadExiste = ciudadDao.existeCiudad(ciudad.name) > 0
             if (ciudadExiste) {
-                _mensajeError.postValue("La ciudad ${ciudad.name} ya está guardada.")
+                _mensajeError.postValue(" La ciudad ${ciudad.name} ya está guardada.")
                 return@launch
             }
 
@@ -65,55 +68,39 @@ class ClimaViewModel @Inject constructor(
                 icono = "https://openweathermap.org/img/wn/${ciudad.weather[0].icon}@2x.png"
             )
             ciudadDao.insertarCiudad(nuevaCiudad)
+
             cargarCiudades()
-        }
-    }
 
-    private fun cargarCiudadesPorDefecto() {
-        if (_ciudadesGuardadas.value.isNullOrEmpty()) {
-            _ciudadesGuardadas.value = listOf(
-                CiudadEntity(1, "Madrid", 15.0, "https://openweathermap.org/img/wn/01d@2x.png"),
-                CiudadEntity(2, "Green Bay", -2.0, "https://openweathermap.org/img/wn/02d@2x.png"),
-                CiudadEntity(3, "Bucharest", 10.0, "https://openweathermap.org/img/wn/03d@2x.png"),
-                CiudadEntity(4, "Londres", 12.0, "https://openweathermap.org/img/wn/04d@2x.png"),
-                CiudadEntity(5, "Cuenca", 8.0, "https://openweathermap.org/img/wn/09d@2x.png")
-            )
-        }
-    }
-
-
-    fun agregarCiudad(ciudad: CiudadEntity) {
-        if (!_ciudadesGuardadas.value!!.any { it.nombre == ciudad.nombre }) {
-            _ciudadesGuardadas.value = _ciudadesGuardadas.value!! + ciudad
+            _mensajeConfirmacion.postValue(" Ciudad ${ciudad.name} añadida correctamente.")
         }
     }
 
     fun actualizarCiudad(ciudad: CiudadEntity) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 ciudadDao.actualizarCiudad(ciudad.nombre, ciudad.temperatura, ciudad.icono)
-                _ciudadesGuardadas.postValue(ciudadDao.obtenerCiudades()) // Recargar la lista
+
+                cargarCiudades()
+
+                _mensajeConfirmacion.postValue(" Ciudad ${ciudad.nombre} actualizada correctamente.")
             } catch (e: Exception) {
-                _mensajeError.postValue("Error al actualizar: ${e.message}")
+                _mensajeError.postValue(" Error al actualizar: ${e.message}")
             }
         }
     }
 
-    fun cargarCiudades() {
-        viewModelScope.launch {
-            _ciudadesGuardadas.postValue(ciudadDao.obtenerCiudades())
-        }
-    }
-
     fun eliminarCiudad(ciudadNombre: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             ciudadDao.eliminarCiudad(ciudadNombre)
+
             cargarCiudades()
+
+            _mensajeConfirmacion.postValue(" Ciudad $ciudadNombre eliminada correctamente.")
         }
     }
 
     fun actualizarClimaCiudad(ciudadNombre: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val apiKey = "f9ce626e93bef28713fb264cb662814a"
                 val climaActualizado = repositorioClima.obtenerClimaActual(ciudadNombre, apiKey)
@@ -124,9 +111,23 @@ class ClimaViewModel @Inject constructor(
                     "https://openweathermap.org/img/wn/${climaActualizado.weather[0].icon}@2x.png"
                 )
                 cargarCiudades()
+                _mensajeConfirmacion.postValue(" Clima de $ciudadNombre actualizado correctamente.")
             } catch (e: Exception) {
-                println("Error al actualizar el clima de $ciudadNombre: ${e.message}")
+                _mensajeError.postValue("Error al actualizar el clima de $ciudadNombre: ${e.message}")
             }
+        }
+    }
+
+    @SuppressLint("NullSafeMutableLiveData")
+    fun limpiarMensajes() {
+        _mensajeError.postValue(null)
+        _mensajeConfirmacion.postValue(null)
+    }
+
+    fun cargarCiudades() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val ciudades = ciudadDao.obtenerCiudades()
+            _ciudadesGuardadas.postValue(ciudades)
         }
     }
 

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ProyectoAPIs</string>
+    <string name="app_name">ProyectoPersistencia</string>
 
     <string name="introducir_ciudad">Introduce ciudad</string>
 
@@ -8,7 +8,7 @@
 
     <string name="grados">ºC</string>
     <string name="ciudad">Ciudad:</string>
-    <string name="temperatura">Temperatura actual:</string>
+    <string name="temperatura">Temperatura actual</string>
     <string name="temperatura_min">Temperatura mínima</string>
     <string name="temperatura_max">Temperatura máxima</string>
     <string name="humedad">Humedad</string>
@@ -22,4 +22,15 @@
     <string name="volver_atras">Volver</string>
     <string name="actualizar_clima">Actualizar clima</string>
     <string name="guardar_cambios">Guardar Cambios</string>
+
+        <string name="edit_city">Editar Ciudad</string>
+        <string name="city_name">Nombre</string>
+        <string name="temperature">Temperatura</string>
+        <string name="save_changes">Guardar Cambios</string>
+        <string name="error_invalid_data">Ingresa un nombre y una temperatura válida</string>
+    <string name="no_hay_coincidencias">No hay coincidencia</string>
+    <string name="buscar_ciudad">Buscar ciudad</string>
+    <string name="volver">Volver</string>
+    <string name="editar_ciudad">Editar Ciudad</string>
+    <string name="nombre">Nombre</string>
 </resources>
